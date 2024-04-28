@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
+import com.microservice.user.external.QualificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ import com.microservice.user.service.UserService;
 public class UserServiceImpl implements UserService {
 
   @Autowired
-  private RestTemplate restTemplate;
+  //private RestTemplate restTemplate;
+  private QualificationService qualificationService;
 
   @Autowired
   private HotelService hotelService;
@@ -40,13 +42,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserEntity getUser(String userId) {
+  public UserEntity  getUser(String userId) {
 
     UserEntity user = userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException("User not fount with the ID: " + userId));
 
-    Qualification[] userQualification = restTemplate
-        .getForObject("http://CALIFICACION-SERVICE/calificaciones/usuarios/" + user.getUserId(), Qualification[].class);
+    Qualification[] userQualification = qualificationService.findQualificationByUserId(userId).toArray(new Qualification[0]);
+            /*restTemplate
+        .getForObject("http://CALIFICACION-SERVICE/qualifications/users/" + user.getUserId(), Qualification[].class);
+    */
     logger.info("{}", userQualification);
 
     List<Qualification> qualifications = Arrays.stream(userQualification).collect(Collectors.toList());

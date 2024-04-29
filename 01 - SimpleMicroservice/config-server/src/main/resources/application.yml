@@ -1,0 +1,19 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: CONFIG-SERVER
+
+  # En caso de hacerlo con la configuración local, es decir, en el mismo proyecto
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations
+# En caso de que use un repositorio de git seria asi:
+        #git:
+         # uri: https://github.com/ChristianRaulRamirez/microservicios-config
+
